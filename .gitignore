@@ -1,3 +1,4 @@
 tools
 **/*.cmp
 **/*.tst
+**/*.out
