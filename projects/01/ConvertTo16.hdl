@@ -1,0 +1,20 @@
+/**
+ * Converts a single bit bus to a 16 bit bus.
+ */
+
+ /* I use the Or16 to create a 16 bit bus out of the selector by OR-ing it with false*/
+
+CHIP ConvertTo16 {
+    IN in;
+    OUT out[16];
+
+    PARTS:
+    Or16(a[0]=in, a[1]=in,
+        a[2]=in, a[3]=in,
+        a[4]=in, a[5]=in,
+        a[6]=in, a[7]=in,
+        a[8]=in, a[9]=in,
+        a[10]=in, a[11]=in,
+        a[12]=in, a[13]=in,
+        a[14]=in, a[15]=in, b=false, out=out);
+}
