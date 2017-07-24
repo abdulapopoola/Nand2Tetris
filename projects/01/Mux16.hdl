@@ -9,10 +9,23 @@
  *                        b[i] if sel == 1
  */
 
+ /* I use the Or16 to create a 16 bit bus out of the selector by OR-ing it with false*/
+
 CHIP Mux16 {
     IN a[16], b[16], sel;
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    Or16(a[0]=sel, a[1]=sel,
+        a[2]=sel, a[3]=sel,
+        a[4]=sel, a[5]=sel,
+        a[6]=sel, a[7]=sel,
+        a[8]=sel, a[9]=sel,
+        a[10]=sel, a[11]=sel,
+        a[12]=sel, a[13]=sel,
+        a[14]=sel, a[15]=sel, b=false, out=sel16);
+    Not16(in=sel16, out=notSel16);
+    And16(a=notSel16, b=a, out=notSel16AndA);
+    And16(a=sel16, b=b, out=sel16AndB);
+    Or16(a=notSel16AndA, b=sel16AndB, out=out);
 }
