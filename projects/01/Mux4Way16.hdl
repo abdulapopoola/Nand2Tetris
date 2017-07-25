@@ -16,26 +16,7 @@ CHIP Mux4Way16 {
     OUT out[16];
 
     PARTS:
-    Not(in=sel[0], out=notSel0);
-    Not(in=sel[1], out=notSel1);
-
-    And(a=notSel0, b=notSel1, out=notSel0AndnotSel1);
-    And(a=notSel0, b=sel[1], out=notSel0AndSel1);
-    And(a=sel[0], b=notSel1, out=sel0AndnotSel1);
-    And(a=sel[0], b=sel[1], out=sel0AndSel1);
-
-    ConvertTo16(in=notSel0AndnotSel1, out=notSel0AndnotSel1as16);
-    ConvertTo16(in=notSel0AndSel1, out=notSel0AndSel1as16);
-    ConvertTo16(in=sel0AndnotSel1, out=sel0AndnotSel1as16);
-    ConvertTo16(in=sel0AndSel1, out=sel0AndSel1as16);
-
-    And16(a=notSel0AndnotSel1as16, b=a, out=notSel0AndNotSel1AndA);
-    And16(a=notSel0AndSel1as16, b=b, out=notSel0AndSel1AndB);
-    And16(a=sel0AndnotSel1as16, b=c, out=sel0AndNotSel1AndC);
-    And16(a=sel0AndSel1as16, b=d, out=sel0Andsel1AndD);
-
-    Or16(a=notSel0AndNotSel1AndA, b=notSel0AndSel1AndB, out=aAndB);
-    Or16(a=sel0AndNotSel1AndC, b=sel0Andsel1AndD, out=cAndD);
-
-    Or16(a=aAndB, b=cAndD, out=out);
+    Mux16(a=a, b=b, sel=sel[0], out=w1);
+    Mux16(a=c, b=d, sel=sel[0], out=w2);
+    Mux16(a=w1, b=w2, sel=sel[1], out=out);
 }
