@@ -7,11 +7,22 @@
  * Computes the sum of three bits.
  */
 
+ /*
+    UNCONVENTIONAL BUT WORKS
+    HalfAdder(a=a, b=b, sum=halfAdderAB, carry=carryAB);
+    Not(in=halfAdderAB, out=notHalfAdderAB);
+    Or(a=a, b=b, out=aOrB);
+    Mux(a=halfAdderAB, b=notHalfAdderAB, sel=c, out=sum);
+    Mux(a=carryAB, b=aOrB, sel=c, out=carry);
+ */
+
 CHIP FullAdder {
     IN a, b, c;  // 1-bit inputs
     OUT sum,     // Right bit of a + b + c
         carry;   // Left bit of a + b + c
 
     PARTS:
-    // Put you code here:
+    HalfAdder(a=a, b=b, sum=partialSum, carry=partialCarry1);
+    HalfAdder(a=partialSum, b=c, sum=sum, carry=partialCarry2);    
+    Or(a=partialCarry1, b=partialCarry2, out=carry);
 }
