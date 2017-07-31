@@ -1,0 +1,12 @@
+/**
+ * Determines if a 16-bit number is negative by checking that its MSB is 1
+ * Since this is based off 2-complements arithmetic
+ */
+
+CHIP IsNegNum16 {
+    IN in[16];
+    OUT out;
+
+    PARTS:
+    And(a=in[15], b=true, out=out);
+}
