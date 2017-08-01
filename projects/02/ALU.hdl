@@ -55,11 +55,8 @@ CHIP ALU {
     Mux16(a=xAndy, b=xPlusy, sel=f, out=xyBasedOnf);
 
     Not16(in=xyBasedOnf, out=notXyBasedOnf);
-    Mux16(a=xyBasedOnf, b=notXyBasedOnf, sel=no, out=outFinal);
+    Mux16(a=xyBasedOnf, b=notXyBasedOnf, sel=no, out=out, out[15]=ng, out=outFinal);
 
-    Or16(a=outFinal, b=false, out=out);
     Or16Way(in=outFinal, out=outIsZero);
     Not(in=outIsZero, out=zr);
-    IsNegNum16(in=outFinal, out=isNegNum);
-    Mux(a=false, b=true, sel=isNegNum, out=ng);
 }
