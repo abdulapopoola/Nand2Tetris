@@ -42,23 +42,24 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-    Not16(in=x, out=notX);
-    Not16(in=y, out=notY);
-
     Mux16(a=x, b=false, sel=zx, out=xBasedOnZx);
-    Mux16(a=xBasedOnZx, b=notX, sel=nx, out=xBasedOnZxAndNx);
+    Not16(in=xBasedOnZx, out=notXBasedOnZx);
+    Mux16(a=xBasedOnZx, b=notXBasedOnZx, sel=nx, out=xBasedOnZxAndNx);
+
     Mux16(a=y, b=false, sel=zy, out=yBasedOnZy);
-    Mux16(a=yBasedOnZy, b=notY, sel=ny, out=yBasedOnZyAndNy);
+    Not16(in=yBasedOnZy, out=notYBasedOnZy);
+    Mux16(a=yBasedOnZy, b=notYBasedOnZy, sel=ny, out=yBasedOnZyAndNy);
 
     Add16(a=xBasedOnZxAndNx, b=yBasedOnZyAndNy, out=xPlusy);
     And16(a=xBasedOnZxAndNx, b=yBasedOnZyAndNy, out=xAndy);
     Mux16(a=xAndy, b=xPlusy, sel=f, out=xyBasedOnf);
 
     Not16(in=xyBasedOnf, out=notXyBasedOnf);
-    Mux16(a=xyBasedOnf, out=notXyBasedOnf, sel=no, out=out);
+    Mux16(a=xyBasedOnf, b=notXyBasedOnf, sel=no, out=outFinal);
 
-    Xor16(a=out, b=false, out=outIsZero);
-    Mux(a=false, b=true, sel=outIsZero, out=zr);
-    isNegNum16(in=out, out=isNegNum);
+    Or16(a=outFinal, b=false, out=out);
+    Or16Way(in=outFinal, out=outIsZero);
+    Not(in=outIsZero, out=zr);
+    IsNegNum16(in=outFinal, out=isNegNum);
     Mux(a=false, b=true, sel=isNegNum, out=ng);
 }
