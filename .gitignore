@@ -2,3 +2,4 @@ tools
 **/*.cmp
 **/*.tst
 **/*.out
+*.zip
