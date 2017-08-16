@@ -6,9 +6,11 @@
 // Multiplies R0 and R1 and stores the result in R2.
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
-// Load R0 into D
-// While R1 is > 0, R1 -> R1-- and R0 -> R0 + R0
-// If R1 eq 0, set R2 to R0 and go to final loop
+// Pseudo code
+// Set R2 to 0
+// Check if R0 or R1 is zero; if so go to end of program immediately
+// While R1 is > 0, R1 -> R1-- and R2 -> R0 + R0
+// If R1 eq 0, go to end of program
 
     @R2
     M=0 // initialize R2 = 0
