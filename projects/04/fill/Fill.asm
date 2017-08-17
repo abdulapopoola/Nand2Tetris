@@ -19,35 +19,50 @@
 // lighten loop, set all screen to 0
 
 (KEYLISTENER)
-
-    @KBD // Since screen is contiguous with kbd, paint from down up
+    @KBD
     D=A
     @address
     M=D-1 // start from address just above
-(DARKENLOOP)
-    @address
-    A=M  //retrieve next address from @address
-    M=-1 // paint section dark
-    @address
-    M=A-1
-    D=A-SCREEN // Find next index
+
+    @KBD
+    D=M
     @DARKENLOOP
     D;JGT
-    @INFINITE_LOOP
+    @LIGTHENLOOP
+    D;JMP
+
+(DARKENLOOP)
+    @KBD
+    D=M
+    @KEYLISTENER
+    D;JEQ
+
+    @address
+    AD=M  //retrieve next address from @address
+    M=-1 // paint section dark
+    @address
+    M=D-1
+    D=M
+    @SCREEN
+    D=D-A // Find next index
+    @DARKENLOOP
+    D;JGT
+    @KEYLISTENER
     0;JMP
 
 (LIGTHENLOOP)
-    @address
-    A=M  //retrieve next address from @address
-    M=0 // paint section white
-    @address
-    M=A-1
-    D=A-SCREEN // Find next index
-    @LIGTHENLOOP
+    @KBD
+    D=M
+    @KEYLISTENER
     D;JGT
 
-(INFINITE_LOOP)
-   @INFINITE_LOOP
-   0;JMP
-
-
+    @address
+    AD=M  //retrieve next address from @address
+    M=0 // paint section black
+    @address
+    M=D-1 //store next RAM segment for painting
+    D=M
+    @SCREEN
+    D=D-A // Find next index
+    @LIGTHENLOOP
+    D;JGT
