@@ -39,12 +39,41 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    Mux16(a=instruction, b=ALUOut, sel=instruction[15], out=muxOut);
-    Mux16(a=muxOut, b=inM, sel=instruction[15], out=ALUIn2);
-    Register(in=ALUOut, load=instruction[15], out=DRegisterOut);
-    ALU(x=ALUIn2, y=DRegisterOut,
-        zx=instruction[11], nx=instruction[10], 
-        zy=instruction[9], ny=instruction[8], 
-        f=instruction[7], no=instruction[6],
-        out=ALUOut, out=outM, zr=zrOut, ng=ngOut);
+    DMux(in=true, sel=instruction[15], a=AInstruction, b=CInstruction); // determine if inst is C or A
+    
+    // If C-instruction; check if destination is A register
+    And(a=Cinstruction, b=instruction[5], out=loadCInstructionIntoARegister);
+    Mux16(a=instruction, b=ALUOut, sel=loadCInstructionIntoARegister, out=ARegisterIn);
+
+    // load ARegister if A-Instruction or if C-instruction with A as destination
+    Or(a=AInstruction, b=loadCInstructionIntoARegister, out=loadARegister);
+    ARegister(in=ARegisterIn, load=loadARegister, out=ARegisterOut, out[0..14]=addressM);
+
+    // Check whether input to ALU comes from A or M registers
+    Mux16(a=ARegisterOut, b=inM, sel=instruction[12], out=AMRegisterOut);
+
+    // If C-instruction; check if destination is D register
+    And(a=Cinstruction, b=instruction[4], out=loadDRegister);
+    DRegister(in=ALUOut, load=loadDRegister, out=DRegisterOut);
+
+    // Do ALU operations
+    ALU(x=AMRegisterOut, 
+        y=DRegisterOut,
+        zx=instruction[11], 
+        nx=instruction[10], 
+        zy=instruction[9],
+        ny=instruction[8], 
+        f=instruction[7],
+        no=instruction[6],
+        out=ALUOut, 
+        out=outM, 
+        zr=zrOut,
+        ng=ngOut);
+
+    // Only write M register if C instruction and d3 is 1
+    And(a=Cinstruction, b=instruction[3], out=writeM);
+
+    // PC counter 
+    //TO BE IMPLEMENTED
+    PC(in=ARegisterOut, reset=reset, inc=incPC, load=loadPC, out[0..14]=pc);
 }
